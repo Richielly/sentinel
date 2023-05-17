@@ -20,8 +20,12 @@ def main(page: ft.Page):
     page.title = "Verificação de Status de Site"
     page.vertical_alignment = ft.CrossAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    ft.Text("SENTINELA")
 
-    txt_url = ft.TextField(label="URL do Site", value='http://ibaitipr.equiplano.com.br:7003/', width=500)
+    txt_url = ft.TextField(label="URL do Site com https://", width=500)
+    if not txt_url:
+        txt_url.error_text = "A URL é obrigatória e deve começar com {https://}"
+        page.update()
     check_type = ft.Dropdown(
         label="Tipo de Verificação",
         options=[ft.dropdown.Option("Online"), ft.dropdown.Option("Offline")],
@@ -70,7 +74,7 @@ def main(page: ft.Page):
             lbl_status.text = "Verificando..."
             btn_check.disabled = True
             check_type.disabled = True
-            btn_reset.enabled = True
+            btn_reset.disabled = False
             txt_url.disabled = True
             txt_interval.disabled = True
             page.update()
@@ -83,13 +87,13 @@ def main(page: ft.Page):
     def on_reset_click(e):
         nonlocal running
 
-        btn_check.disabled = True
-        btn_reset.enabled = False
+        btn_check.disabled = False
+        btn_reset.disabled = True
         check_type.disabled = False
         txt_url.disabled = False
         txt_interval.disabled = False
         txt_url.value = ""
-        txt_interval.value = ""
+        txt_interval.value = "5"
         lbl_status.value = "Aguardando verificação..."
         lbl_status.color = None
         list_log.controls.clear()
@@ -100,6 +104,9 @@ def main(page: ft.Page):
     btn_check.on_click = on_check_click
     btn_reset.on_click = on_reset_click
 
+    btn_reset.disabled =True
+
+    page.add(ft.Text("SENTINELA", size=40))
     page.add(txt_url)
     page.add(check_type)
     page.add(txt_interval)
@@ -110,3 +117,6 @@ def main(page: ft.Page):
 
 if __name__ == "__main__":
     ft.app(target=main)
+
+#  pyinstaller --name export_unifica_frotas --onefile --icon=img.ico --noconsole main.py
+# flet pack --name sentinel --icon=img.ico main.py
