@@ -4,6 +4,13 @@ import time
 import winsound
 from threading import Thread
 
+from datetime import datetime
+
+def is_date_before_today():
+    target_date = datetime(2023, 7, 30).date()
+    today = datetime.now().date()
+    return target_date < today
+
 def check_website_status(url, check_type):
     try:
         response = requests.head(url)
@@ -105,6 +112,9 @@ def main(page: ft.Page):
     btn_reset.on_click = on_reset_click
 
     btn_reset.disabled =True
+    if is_date_before_today():
+        btn_check.disabled = True
+        page.add(ft.Text("Uma nova atualização foi requirida, para continuar solicite a nova versão.", size=15, color=ft.colors.GREEN))
 
     page.add(ft.Text("SENTINELA", size=40))
     page.add(txt_url)
